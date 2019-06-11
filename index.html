@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>UI Components</title>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" rel="stylesheet">
+  <style>
+    *, *:before, *:after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+    }
+    body {
+      overflow-y: scroll;
+      margin: 0;
+      background-color: #292c2f;
+      font-family: 'Open Sans', Arial, Helvetica, Sans-serif, Verdana, Tahoma;
+    }
+    ul {
+      list-style-type: none;
+    }
+    header {
+      height: 70px;
+      line-height: 70px;
+      background: #252525;
+    }
+    .range-container {
+      position: absolute;
+      left: 30px;
+      top: 25px;
+      width: 300px;
+      height: 20px;
+    }
+    .range {
+      position: relative;
+      margin: 0 10px;
+      height: 20px;
+      cursor: pointer;
+    }
+    .range-track {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      height: 4px;
+      background: #424242;
+      border-radius: 4px;
+    }
+    .range-track.fill {
+      width: 0%;
+      background: #4ac1ff;
+    }
+    .range-handle {
+      position: absolute;
+      left: -10px;
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      background: #fff;
+      cursor: pointer;
+      outline: none;
+    }
+    .gradient-val {
+      color: #ccc;
+      font-size: 14px;
+      font-weight: 800;
+      padding-left: 350px;
+      user-select: none;
+    }
+    .gradient-val span {
+      color: #ccc;
+    }
+    .gradient {
+      position: absolute;
+      width: 100%;
+      min-height: calc(100% - 70px);
+      padding-bottom: 50px;
+      background-image: linear-gradient(0deg, #f1a829, #f14429);
+    }
+
+    .main-title {
+      color: #fff;
+      font-size: 2.5rem;
+      text-align: center;
+      padding: 50px 0;
+    }
+
+    /*
+     * Tabs UI
+    */
+    .tabs {
+      min-width: 320px;
+      max-width: 800px;
+      padding: 50px;
+      margin: 50px auto;
+      background: #fff;
+      border-radius: 4px;
+    }
+    .tab {
+      display: inline-block;
+      margin: 0 0 -1px;
+      padding: 15px 25px;
+      text-align: center;
+      color: #555;
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+    .icon {
+      margin-right: 10px;
+    }
+    .tab.active {
+      border: 1px solid #ddd;
+      border-top: 2px solid #f44336;
+      border-bottom: 1px solid #fff;
+    }
+    .tab-content {
+      /* display: none; */
+      padding: 20px;
+      border: 1px solid #ddd;
+      line-height: 1.6rem;
+    }
+
+    /*
+     * Accordion UI
+    */
+    .accordion {
+      width: 100%;
+      max-width: 360px;
+      margin: auto;
+      background: #fff;
+      border-radius: 4px;
+    }
+    .accordion .menu {
+      position: relative;
+      padding: 15px 15px 15px 45px;
+      color: #4d4d4d;
+      font-weight: bold;
+      border-bottom: 1px solid #ccc;
+      cursor: pointer;
+      transition: all 0.4s ease;
+    }
+    .accordion li:last-child .menu {
+      border-bottom: 0;
+    }
+    .accordion li i {
+      position: absolute;
+      top: 1.2rem;
+      left: 1rem;
+      color: #595959;
+      transition: all 0.4s ease;
+    }
+    .accordion li i.fa-chevron-down {
+      right: 1rem;
+      left: auto;
+    }
+    .accordion li.active i.fa-chevron-down {
+      transform: rotate(180deg);
+    }
+    .accordion li.active .menu {
+      color: #b63b4d;
+    }
+    .accordion li.active i {
+      color: #b63b4d;
+    }
+    /* Show submenu */
+    .accordion li.active .submenu {
+      /*
+        height: 0 -> height: auto;는 transition이 동작하지 않는다.
+        max-height: 임의의 높이;를 지정하면 transition이 동작하지만 타이밍이 망가진다.
+        max-height: 1000px;과 max-height: 133px;을 비교해 보라!
+        height를 1000px으로 transition할 시간에 실제로는 133px정도만 transition하므로 여는 시간이 닫는 시간보다 빠르다.
+      */
+      /* max-height: 1000px; */
+      /* max-height: 133px; */
+    }
+    .submenu {
+      height: 0;
+      overflow: hidden;
+      background: #444359;
+      font-size: 14px;
+      transition: height 0.4s ease;
+    }
+    .submenu li {
+      border-bottom: 1px solid #4b4a5e;
+    }
+    .accordion li:last-child .submenu {
+      border-radius: 0 0 4px 4px;
+    }
+    .accordion li:last-child .submenu li:last-child {
+      border-bottom: 0;
+    }
+    .submenu a {
+      display: block;
+      text-decoration: none;
+      color: #d9d9d9;
+      padding: 12px;
+      padding-left: 42px;
+      transition: all 0.25s ease-in-out;
+    }
+    .submenu a:hover {
+      background: #b63b4d;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="range-container">
+      <div class="range">
+        <div class="range-track"></div>
+        <div class="range-track fill"></div>
+        <span class="range-handle"></span>
+      </div>
+    </div>
+    <div class="gradient-val">
+      background-image: linear-gradient(
+        <span class="gradient-angle">0</span>deg,
+        <span style="color: #f1a829;">#f1a829</span>,
+        <span style="color: #f14429;">#f14429</span> )
+    </div>
+  </header>
+  <div class="gradient">
+    <h1 class="main-title">UI Components</h1>
+    <div class="tabs"></div>
+    <ul id="accordion" class="accordion">
+      <li class="active">
+      <!-- <li> -->
+        <div class="menu"><i class="fa fa-code"></i>Front-end<i class="fa fa-chevron-down"></i></div>
+        <ul class="submenu">
+          <li><a href="#">HTML</a></li>
+          <li><a href="#">CSS</a></li>
+          <li><a href="#">Javascript</a></li>
+        </ul>
+      </li>
+      <li>
+        <div class="menu"><i class="fa fa-mobile"></i>Responsive web<i class="fa fa-chevron-down"></i></div>
+        <ul class="submenu">
+          <li><a href="#">Tablets</a></li>
+          <li><a href="#">Mobiles</a></li>
+          <li><a href="#">Desktop</a></li>
+        </ul>
+      </li>
+      <li>
+        <div class="menu"><i class="fa fa-globe"></i>Web Browser<i class="fa fa-chevron-down"></i></div>
+        <ul class="submenu">
+          <li><a href="#">Chrome</a></li>
+          <li><a href="#">Firefox</a></li>
+          <li><a href="#">Safari</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <script>
+    class Tab {
+      constructor(tabsData) {
+        this.tabsData = tabsData;
+        this.$tabs = document.querySelector('.tabs');
+
+        // active 클래스가 지정된 tab 요소와 같은 인덱스의 tab-content 요소만 표시
+        this.renderTabs();
+        this.changeTab(document.querySelector('.tab.active'));
+
+        // tab 클릭 이벤트 핸들러 등록
+        this.$tabs.addEventListener('click', this.tabsClickEvent.bind(this));
+      }
+
+      // tabsData 객체를 기반으로 tab-group 요소를 생성
+      renderTabs() {
+        const html = `<ul class="tab-group">${this.tabsData.map(tab => `<li class="tab${tab.active ? ' active' : ''}"><i class="icon ${tab.iconClass}"></i>${tab.title}</li>`).join('')}</ul><div class="tab-content-group">${this.tabsData.map(tab => `<div class="tab-content">${tab.content}</div>`).join('')}</div>`;
+
+        document.querySelector('.tabs').insertAdjacentHTML('beforeend', html);
+      }
+
+      changeTab(target) {
+        if (!target.classList.contains('tab')) return;
+        const $tabContentGroup = target.parentNode.nextElementSibling.children;
+
+        [...target.parentNode.children].forEach((tabItem, idx) => {
+          if (tabItem === target) {
+            tabItem.classList.add('active');
+            $tabContentGroup[idx].style.display = 'block';
+          } else {
+            tabItem.classList.remove('active');
+            $tabContentGroup[idx].style.display = 'none';
+          }
+        });
+      }
+
+      tabsClickEvent(e) {
+        this.changeTab(e.target);
+      }
+    }
+
+    class Accordion {
+      constructor(options) {
+        // 기본 옵션과 사용자 지정 옵션을 병합
+        this.config = Accordion.mergeConfig(options);
+        this.$accordion = document.querySelector(this.config.selector);
+        this.startActive();
+
+        this.$accordion.addEventListener('click', this.menuClickEvent.bind(this));
+      }
+
+      static mergeConfig(options) {
+        // 기본 옵션
+        const config = {
+          selector: '#accordion',
+          multi: true
+        };
+
+        return { ...config, ...options };
+      }
+
+      startActive() {
+        const $activeItem = this.$accordion.querySelector('.active');
+        const $submenu = $activeItem.querySelector('.submenu');
+        $submenu.style.height = `${$submenu.scrollHeight}px`;
+      }
+
+      menuClickEvent(e) {
+        if (!e.target.classList.contains('menu')) return;
+
+        if (this.config.multi) this.multiTrue(e.target);
+        else this.multiFalse(e.target);
+      }
+
+      multiTrue(target) {
+        const $accordionItem = target.parentNode;
+        const $submenu = $accordionItem.querySelector('.submenu');
+        $accordionItem.classList.toggle('active');
+        $submenu.style.height = $accordionItem.classList.contains('active') ? `${$submenu.scrollHeight}px` : '0';
+      }
+
+      multiFalse(target) {
+        [...target.parentNode.parentNode.children].forEach(accordionItem => {
+          const $submenu = accordionItem.querySelector('.submenu');
+          if (accordionItem === target.parentNode) {
+            accordionItem.classList.add('active');
+            $submenu.style.height = `${$submenu.scrollHeight}px`;
+          } else {
+            accordionItem.classList.remove('active');
+            $submenu.style.height = '0';
+          }
+        });
+      }
+    }
+
+    window.onload = function () {
+      const $range = document.querySelector('.range');
+      const $track = document.querySelector('.range-track');
+      const $fill = document.querySelector('.range-track.fill');
+      const $handle = document.querySelector('.range-handle');
+      const $gradient = document.querySelector('.gradient');
+      const $gradientAngle = document.querySelector('.gradient-angle');
+
+      // .range-track 요소의 정보
+      const { left, right, width } = $track.getBoundingClientRect();
+
+      /**
+       * mousedown, mousemove 이벤트 핸들러
+       * 1. 뷰포트를 기준으로 한 마우스 포인터의 x축 위치를 바탕으로 .range-handle 요소를 수평 이동하고 .fill 요소의 너비를 변경한다.
+       * 2. .gradient 요소의 background-image를 변경한다.
+       *
+       * @param {MouseEvent} e - 이벤트 객체
+       */
+      function rangeHandler(e) {
+        if (e.clientX < left || e.clientX > right) return;
+        $fill.style.width = `${(e.clientX - left) / width * 100}%`;
+        $handle.style.transform = `translate3d(${e.clientX - left}px, 0, 0)`;
+        $gradient.style.backgroundImage = `linear-gradient(${(e.clientX - left) / width * 360}deg, #f1a829, #f14429)`;
+        $gradientAngle.textContent = Math.floor((e.clientX - left) / width * 360);
+      }
+
+      // .range-track 요소의 좌우 영역 내에서 발생한 이벤트만 캐치하기 위해 .range 요소에 이벤트를 등록한다.
+      // margin 영역은 이벤트를 발생시키지 않는다.
+      $range.addEventListener('mousedown', e => {
+        e.preventDefault();
+
+        rangeHandler(e);
+
+        // mousedown 이벤트가 발생한 상태에서 mousemove 이벤트가 발생
+        $range.addEventListener('mousemove', rangeHandler);
+      });
+
+      // mouseup 이벤트가 발생하면 mousemove 이벤트를 삭제한다.
+      // $range 밖에서 발생한 mouseup 이벤트도 처리하기 위해 document의 mouseup 이벤트에 이벤트 핸들러를 등록한다
+      document.addEventListener('mouseup', () => {
+        $range.removeEventListener('mousemove', rangeHandler);
+      });
+
+      const tab = new Tab([
+        {
+          title: 'HTML',
+          active: true,
+          iconClass: 'fab fa-html5',
+          content: `<strong>HTML(HyperText Markup Language)</strong> is the most basic building block of the Web.
+            It describes and defines the content of a webpage along with the basic layout of the webpage.
+            Other technologies besides HTML are generally used to describe a web page's
+            appearance/presentation(CSS) or functionality/ behavior(JavaScript).`
+        },
+        {
+          title: 'CSS',
+          active: false,
+          iconClass: 'fab fa-css3',
+          content: `<strong>Cascading Style Sheets(CSS)</strong> is a stylesheet language used to describe
+            the presentation of a document written in HTML or XML (including XML dialects
+            such as SVG, MathML or XHTML). CSS describes how elements should be rendered on screen,
+            on paper, in speech, or on other media.`
+        },
+        {
+          title: 'JavaScript',
+          active: false,
+          iconClass: 'fab fa-js-square',
+          content: `<strong>JavaScript(JS)</strong> is a lightweight interpreted or JIT-compiled programming
+            language with first-class functions. While it is most well-known as the scripting
+            language for Web pages, many non-browser environments also use it, such as Node.js,
+            Apache CouchDB and Adobe Acrobat. JavaScript is a prototype-based, multi-paradigm,
+            dynamic language, supporting object-oriented, imperative, and declarative
+            (e.g. functional programming) styles.`
+        }
+      ]);
+
+      const accordion = new Accordion({ multi: false });
+      // const accordion = new Accordion();
+    };
+  </script>
+</body>
+</html>
